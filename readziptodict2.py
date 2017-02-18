@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #readziptodict2.py
-import os
 import os.path
-import zipfile
-import yaml
-import statistics
-import lmoments
-import csv
+from os.path import basename
 import sqlite3
+import statistics
+import zipfile
 
+import lmoments
+import yaml
+from tkinter import *
+from tkinter import filedialog
+from tkinter.filedialog import askopenfilename
+import os
 
 def getstation(stations, stationNum):
     print (yaml.dump(stations[stationNum], default_flow_style=True))#yaml prints the dictionary out nicely
@@ -28,24 +31,31 @@ def doPrint(stations, stationNum):#just prints out data for selected station num
 if __name__ == "__main__":
 #def getStData():    
 #Extracts and loads the files in a zip file to a specified destination
-
-    db = sqlite3.connect('/Users/jem/WINFAP-FEH_v4.1/Python FEH/STATIONS.sqlite')  #connect to database
+    root = Tk()
+    root.withdraw()
+    dbfile=filedialog.askopenfilename(initialdir="", title="choose sqlite file", filetypes=(("sqlite files","*.sqlite"), ("all files","*.*")))
+    db = sqlite3.connect(dbfile)  #connect to database
     cursor = db.cursor()  #create cursor for SQL commands
     
     cursor.execute('CREATE TABLE IF NOT EXISTS am_DETAILS(stationNum INTEGER PRIMARY KEY, yearType TEXT, waterYear TEXT, aMRejected TEXT, fileType TEXT)')
     cursor.execute('CREATE TABLE IF NOT EXISTS amaxdata(stationNum INTEGER, mon_date DATE, flow REAL)')
+    #sets up pathname to winfap zip file
+    pathtozip = filedialog.askopenfilename(initialdir="", title="choose winfap zip file", filetypes=(("zip files", "*.zip"), ("all files", "*.*")))
 
-    with zipfile.ZipFile('/Users/jem/WINFAP-FEH_v4.1/WINFAP-FEH_v3.3.4.zip','r') as ze:#to be rpelaced with user selection
-        ze.extractall('/Users/jem/WINFAP-FEH_v4.1/WINFAP')
+    with zipfile.ZipFile(pathtozip,'r') as ze:
+        ze.extractall()#just unzip to same directory as zipfile.
+root.update()
+#sets up path to unzipped winfap files
+pathtounzipped = os.path.join(os.path.dirname(pathtozip), os.path.splitext(os.path.basename(pathtozip))[0])
 
-for subdir, dirs, files in os.walk('/Users/jem/WINFAP-FEH_v4.1/WINFAP'):#to be replaced with user selected subdirectory
+for subdir, dirs, files in os.walk(pathtounzipped):#to be replaced with user selected subdirectory
     for name in files:
         stations = {}
         if name.endswith(".AM"):
             with open(os.path.join(subdir, name), 'r') as input_data:
 
                 stationNum = None; aMDetails = []; aMDetailsAll = None; aMRejected = []; aMValues = []; flag = 'END'; yearType = []
-                waterYear = []; aMRejectedAll = []; aMFlow = []; aMmon_date = []; aMSt_num = []
+                waterYear = []; aMRejectedAll = []; aMFlow = []; aMmon_date = []; aMSt_num = []; stationnums = []
 
                 for line in input_data:
                     if line.strip() == '[END]':
@@ -56,9 +66,10 @@ for subdir, dirs, files in os.walk('/Users/jem/WINFAP-FEH_v4.1/WINFAP'):#to be r
                         current = line.replace(' ','').split(',')[1]#gets the flow data from each line of AM values and puts in a new list
                         mon_date = line.replace(' ','').split(',')[0]
 
-                        #aMFlow.append(current)
-                        #aMmon_date.append(mon_date)
-                        aMValues.append(stationNum + ',' + mon_date + ','+ current)
+                        stationnums.append(stationNum)
+                        aMFlow.append(current)
+                        aMmon_date.append(mon_date)
+                        aMValues=zip(stationnums, aMmon_date, aMFlow)#makes lists into a list of tuples for sqlite executemany
                         #cursor.execute('INSERT INTO amaxdata(stationNum, mon_date, flow) VALUES(?,?,?)',(stationNum, mon_date, current))
                     #end of block to move to "AMAX_Data" table in db
                     elif line.strip() == '[STATION NUMBER]':
@@ -94,7 +105,7 @@ for subdir, dirs, files in os.walk('/Users/jem/WINFAP-FEH_v4.1/WINFAP'):#to be r
                     #else:
                         #pass
             if aMValues:
-                cursor.executemany('INSERT INTO amaxdata(stationNum, mon_date, flow) VALUES(?)',
+                cursor.executemany('INSERT INTO amaxdata(stationNum, mon_date, flow) VALUES(?,?,?)',
                                    (aMValues))
                 db.commit()
             input_data.close()
