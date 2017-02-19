@@ -57,8 +57,9 @@ db = psycopg2.connect("dbname='feh1' user='jem' host='localhost'")  # connect to
 cursor = db.cursor()  # create cursor for SQL commands
 
 cursor.execute(
-    'CREATE TABLE IF NOT EXISTS am_DETAILS(stationNum INTEGER PRIMARY KEY, yearType TEXT, waterYear TEXT, aMRejected TEXT, fileType TEXT)')
+    'CREATE TABLE IF NOT EXISTS am_DETAILS(stationNum PRIMARY KEY INTEGER, yearType TEXT, waterYear TEXT, aMRejected TEXT)')
 cursor.execute('CREATE TABLE IF NOT EXISTS amaxdata(stationNum INTEGER, mon_date DATE, flow REAL)')
+cursor.execute('CREATE TABLE IF NOT EXISTS cd3_data(stationNum PRIMARY KEY INTEGER')
 
 for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user selected subdirectory
     for name in files:
@@ -136,6 +137,10 @@ for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user 
                         # else:
                         # pass
             input_data.close()
+            SQLinsert = "INSERT INTO am_Details (stationNum, yearType, waterYear, aMRejected) VALUES (%s,%s,%s,%s);"
+            data = (stationNum, yearType, waterYear, aMRejected)
+            cursor.execute(SQLinsert, data)
+            db.commit()
             stations[stationNum] = {'AM_Details': {'Year_Type': yearType, 'Water_Year': waterYear},
                                     'AM_Rejected': aMRejected,
                                     'AM_Values': aMValues, 'AM_Flow': aMFlow}
