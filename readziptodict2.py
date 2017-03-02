@@ -56,10 +56,10 @@ pathtounzipped = os.path.join(os.getcwd(), os.path.splitext(os.path.basename(pat
 db = psycopg2.connect("dbname='feh1' user='jem' host='localhost'")  # connect to database
 cursor = db.cursor()  # create cursor for SQL commands
 
-cursor.execute(
-    'CREATE TABLE IF NOT EXISTS am_DETAILS(stationNum PRIMARY KEY INTEGER, yearType TEXT, waterYear TEXT, aMRejected TEXT)')
+cursor.execute('CREATE TABLE IF NOT EXISTS am_DETAILS(stationNum INTEGER PRIMARY KEY, yearType VARCHAR, '
+               'waterYear VARCHAR, aMRejected VARCHAR)')
 cursor.execute('CREATE TABLE IF NOT EXISTS amaxdata(stationNum INTEGER, mon_date DATE, flow REAL)')
-cursor.execute('CREATE TABLE IF NOT EXISTS cd3_data(stationNum PRIMARY KEY INTEGER')
+
 
 for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user selected subdirectory
     for name in files:
@@ -118,32 +118,16 @@ for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user 
                         flag = 'AM Values'
                     else:
                         continue
-                        # add conditionals for CD3 data to be associated with AMAX data
 
-                        # elif name.endswith(".CD3"):#parse data from CD3 file.  All information describing the gauging station and related catchment
-
-                        # with open(os.path.join(subdir, name), 'r') as input_data:
-
-                        # cD3 = '.CD3'; version = ''; stName = ''; location = ''; nomArea = 0; nomNGR = (); iHDTMNGR = (); centroidNGR = (); dTMArea = 0
-                        # altBar = 0; aspBar = 0; aspVar = 0; bFIHost = 0; dPLBar = 0; dPSBar = 0; farl = 0; fPExt = 0; lDP = 0; propWet = 0; rmed1H = 0;
-                        # rmed1D = 0; rmed_2D = 0; saar = 0; saar_4170 = 0; sprHost = 0; urbConc1990 = 0; urbExt1990 = 0; urbLoc1990 = 0; urbConc2000 = 0;
-                        # urbExt2000 = 0; urbLoc2000 = 0; suitQMED = False; suitPooling = False; comments = ''
-
-                        # for line in input_data:
-                        # if line.split(',')[0] == 'VERSION':
-                        # version = line.strip().split(',')[0]
-                        # elif line.split(',')[0] == 'NAME':
-                        # stName = line.split(',')[1]
-                        # else:
-                        # pass
             input_data.close()
-            SQLinsert = "INSERT INTO am_Details (stationNum, yearType, waterYear, aMRejected) VALUES (%s,%s,%s,%s);"
+            SQLinsert = "INSERT INTO am_Details (stationNum, yearType, waterYear, aMRejected) VALUES (%s,%s,%s,%s) ON CONFLICT (stationNum) DO NOTHING;"
             data = (stationNum, yearType, waterYear, aMRejected)
             cursor.execute(SQLinsert, data)
             db.commit()
-            stations[stationNum] = {'AM_Details': {'Year_Type': yearType, 'Water_Year': waterYear},
-                                    'AM_Rejected': aMRejected,
-                                    'AM_Values': aMValues, 'AM_Flow': aMFlow}
+
+            #stations[stationNum] = {'AM_Details': {'Year_Type': yearType, 'Water_Year': waterYear},
+                                    #'AM_Rejected': aMRejected,
+                                    #'AM_Values': aMValues, 'AM_Flow': aMFlow}
             # .CD3 file data to dictionary
             # 'File_Format': {'Type': cD3, 'Version': version}, 'CDS_Details': {'Name': stName, 'Location': location,
             # 'Nominal_Area': nomArea, 'Nominal_NGR': nomNGR}, 'Decsriptors': {'IHDTM_NGR': iHDTMNGR, 'Centroid_NGR': centroidNGR, 'DTM_Area': dTMArea,
@@ -153,3 +137,30 @@ for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user 
             # 'URBLOC2000': urbLoc2000}, 'Suitability': {'QMED': suitQMED, 'Pooling': suitPooling}, 'COMMENTS': comments}
             # return stations
             # a function that gets the file path to the FEH CD-ROM csv file and imports the unguaged catchment. Might be better as a class.
+
+         # add conditionals for CD3 data to be associated with AMAX data
+
+        elif name.endswith(".CD3"):#parse data from CD3 file.  All information describing the gauging station and related catchment
+
+            with open(os.path.join(subdir, name), 'r') as input_data:
+
+                cD3 = '.CD3'; ver = ''; stName = ''; location = ''; nomArea = 0; nomNGR = (); iHDTMNGR = (); centroidNGR = (); dTMArea = 0
+                altBar = 0; aspBar = 0; aspVar = 0; bFIHost = 0; dPLBar = 0; dPSBar = 0; farl = 0; fPExt = 0; lDP = 0; propWet = 0; rmed1H = 0;
+                rmed1D = 0; rmed_2D = 0; saar = 0; saar_4170 = 0; sprHost = 0; urbConc1990 = 0; urbExt1990 = 0; urbLoc1990 = 0; urbConc2000 = 0;
+                urbExt2000 = 0; urbLoc2000 = 0; suitQMED = False; suitPooling = False; comments = ''
+                cursor.execute('CREATE TABLE IF NOT EXISTS cd3_data(stationNum INT PRIMARY KEY, ver REAL, stName VARCHAR, location VARCHAR, nomArea FLOAT, nomNGRE INT,'
+                               'nomNGRN INT, iHDTMNGRE INT, iHDTMNGRN INT, centroidNGRE INT, centroidNGRN INT, dTMArea REAL, altBar INT, aspBar INT, aspVar REAL, bFIHost REAL,'
+                               'dPLBar REAL, dPSBar REAL, farl REAL, fPExt REAL, lDP REAL, propWet REAL, rmed1H REAL, rmed1D REAL, rmed2D REAL, saar INT, saar_1470 INT,'
+                               'sprHost REAL, urbConc1990 REAL, urbExt1990 REAL, urbLoc1990 REAL, urbConc2000 REAL, urbExt2000 REAL, urbLoc2000 REAL, suitQMED BOOLEAN, suitPooling BOOLEAN,'
+                               'comments VARCHAR)')
+                for line in input_data:
+                    if line.split(',')[0] == 'VERSION':
+                        ver = line.strip().split(',')[1]
+                    elif line.split(',')[0] == 'NAME':
+                        stName = line.split(',')[1]
+
+
+                SQLinsert = "INSERT INTO cd3_data(stName, ver) VALUES (%s,%s);"
+                data = (stName, ver,)
+                cursor.execute(SQLinsert, data)
+                db.commit()
