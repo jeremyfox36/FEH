@@ -144,29 +144,33 @@ for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user 
 
             with open(os.path.join(subdir, name), 'r') as input_data:
 
-                cD3 = '.CD3'; ver = ''; stName = ''; Loc = ''; nomArea = 0; nomNGR = (); iHDTMNGR = (); centroidNGR = (); dTMArea = 0
-                altBar = 0; aspBar = 0; aspVar = 0; bFIHost = 0; dPLBar = 0; dPSBar = 0; farl = 0; fPExt = 0; lDP = 0; propWet = 0; rmed1H = 0;
-                rmed1D = 0; rmed_2D = 0; saar = 0; saar_4170 = 0; sprHost = 0; urbConc1990 = 0; urbExt1990 = 0; urbLoc1990 = 0; urbConc2000 = 0;
-                urbExt2000 = 0; urbLoc2000 = 0; suitQMED = False; suitPooling = False; comments = ''
-                cursor.execute('CREATE TABLE IF NOT EXISTS cd3_data(stationNum INT, ver REAL, stName VARCHAR, Loc VARCHAR, nomArea FLOAT, nomNGRE INT,'
+                cD3 = '.CD3'; ver = ''; stName = ''; Loc = ''; nomArea = 0; nomNGRE = None; nomNGRN =None; iHDTMNGRE = None; iHDTMNGRN = None; centroidNGR = None; dTMArea = 0
+                altBar = None; aspBar = None; aspVar = None; bFIHost = None; dPLBar = None; dPSBar = None; farl = None; fPExt = None; lDP = None; propWet = None; rmed1H = None;
+                rmed1D = None; rmed_2D = None; saar = None; saar_4170 = None; sprHost = None; urbConc1990 = None; urbExt1990 = None; urbLoc1990 = None; urbConc2000 = None;
+                urbExt2000 = None; urbLoc2000 = None; suitQMED = False; suitPooling = False; comments = ''
+                cursor.execute('CREATE TABLE IF NOT EXISTS cd3_data(stationNum INT, ver REAL, stName VARCHAR, Loc VARCHAR, nomArea REAL, nomNGRE INT,'
                                'nomNGRN INT, iHDTMNGRE INT, iHDTMNGRN INT, centroidNGRE INT, centroidNGRN INT, dTMArea REAL, altBar INT, aspBar INT, aspVar REAL, bFIHost REAL,'
                                'dPLBar REAL, dPSBar REAL, farl REAL, fPExt REAL, lDP REAL, propWet REAL, rmed1H REAL, rmed1D REAL, rmed2D REAL, saar INT, saar_1470 INT,'
                                'sprHost REAL, urbConc1990 REAL, urbExt1990 REAL, urbLoc1990 REAL, urbConc2000 REAL, urbExt2000 REAL, urbLoc2000 REAL, suitQMED BOOLEAN, suitPooling BOOLEAN,'
                                'comments VARCHAR)')
                 for line in input_data:
-                    if line.split(',')[0] == 'VERSION':
-                        ver = line.split(',')[1]
-                    elif line.split(',')[0] == 'NAME':
-                        stName = line.split(',')[1]
-                    elif line.split(',')[0] == '[STATION NUMBER]':
-                        stationNum = next(input_data).rstrip(
-                            '\n')  # next line after the heading is always the station number
-                    elif line.split(',')[0] == 'LOCATION':
-                        Loc = line.split(','))[1]
-                    elif line.split(',')[0] == 'NOMINAL AREA':
-                        nomArea = line.split(',')[1]#need to strip out /n and whitespce
+                    splitline = line.split(',')
+                    if splitline[0] == 'VERSION':
+                        ver = splitline[1].strip()
+                    elif splitline[0] == 'NAME':
+                        stName = splitline[1].strip()
+                    elif splitline[0] == 'LOCATION':
+                        Loc = splitline[1].strip()
+                    elif splitline[0] == 'NOMINAL AREA':
+                        nomArea = float(splitline[1].strip())
+                    elif splitline[0] == 'NOMINAL NGR':
+                        nomNGRE = int(splitline[1].strip())
+                        nomNGRN = int(splitline[2].strip())
+                    elif splitline[0] == 'IHDTM NGR':
+                        iHDTMNGRE = int(splitline[2].strip())
+                        iHDTMNGRN = int(splitline[3].strip())
 
-                SQLinsert = "INSERT INTO cd3_data(stationNum, ver, stName, Loc, nomArea) VALUES (%s,%s,%s,%s);"
-                data = (stationNum, ver, stName, Loc, nomArea)
+                SQLinsert = "INSERT INTO cd3_data(stationNum, ver, stName, Loc, nomArea, nomNGRE, nomNGRN, iHDTMNGRE, iHDTMNGRN) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+                data = (stationNum, ver, stName, Loc, nomArea, nomNGRE, nomNGRN, iHDTMNGRE, iHDTMNGRN)
                 cursor.execute(SQLinsert, data)
                 db.commit()
