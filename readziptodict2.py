@@ -7,6 +7,7 @@ import psycopg2
 import sqlite3
 import statistics
 import zipfile
+import math
 
 import lmoments
 import yaml
@@ -31,8 +32,6 @@ def doPrint(stations, stationNum):  # just prints out data for selected station 
     LMOM = (lmoments.samlmu(flowdata, 5))
     print("L1: {} L2: {} L3: {} L4: {} L5: {}".format(round(LMOM[0], 2), round(LMOM[1], 2), round(LMOM[2], 2),
                                                       round(LMOM[3], 2), round(LMOM[4], 2)))
-
-
 if __name__ == "__main__":
     # def getStData():
     # Extracts and loads the files in a zip file to a specified destination
