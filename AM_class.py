@@ -1,5 +1,3 @@
-import numpy as np
-
 class AMAX(object):
     
     def __init__(self, File_Type, St_No, AM_Details, AM_Rejected, AM_Values):

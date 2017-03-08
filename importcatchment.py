@@ -1,3 +1,5 @@
+import csv
+
 def importcatchment():
     #reads csv in and puts in it in alist of tuples
     with open('/Users/jem/WINFAP-FEH_v4.1/gore water.csv', 'r') as catchmentfile:
@@ -48,3 +50,5 @@ def importcatchment():
     d3_1km = float(ungaugedCatchment[37][1])
     e_1km = float(ungaugedCatchment[38][1])
     f_1km = float(ungaugedCatchment[39][1])
+
+    return ungaugedCatchment

@@ -13,7 +13,6 @@ import lmoments
 import yaml
 from tkinter import *
 from tkinter import filedialog
-from tkinter.filedialog import askopenfilename
 import os
 
 
@@ -32,6 +31,8 @@ def doPrint(stations, stationNum):  # just prints out data for selected station 
     LMOM = (lmoments.samlmu(flowdata, 5))
     print("L1: {} L2: {} L3: {} L4: {} L5: {}".format(round(LMOM[0], 2), round(LMOM[1], 2), round(LMOM[2], 2),
                                                       round(LMOM[3], 2), round(LMOM[4], 2)))
+
+
 if __name__ == "__main__":
     # def getStData():
     # Extracts and loads the files in a zip file to a specified destination
@@ -58,7 +59,6 @@ cursor = db.cursor()  # create cursor for SQL commands
 cursor.execute('CREATE TABLE IF NOT EXISTS am_DETAILS(stationNum INTEGER PRIMARY KEY, yearType VARCHAR, '
                'waterYear VARCHAR, aMRejected VARCHAR)')
 cursor.execute('CREATE TABLE IF NOT EXISTS amaxdata(stationNum INTEGER, mon_date DATE, flow REAL)')
-
 
 for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user selected subdirectory
     for name in files:
@@ -124,9 +124,9 @@ for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user 
             cursor.execute(SQLinsert, data)
             db.commit()
 
-            #stations[stationNum] = {'AM_Details': {'Year_Type': yearType, 'Water_Year': waterYear},
-                                    #'AM_Rejected': aMRejected,
-                                    #'AM_Values': aMValues, 'AM_Flow': aMFlow}
+            # stations[stationNum] = {'AM_Details': {'Year_Type': yearType, 'Water_Year': waterYear},
+            # 'AM_Rejected': aMRejected,
+            # 'AM_Values': aMValues, 'AM_Flow': aMFlow}
             # .CD3 file data to dictionary
             # 'File_Format': {'Type': cD3, 'Version': version}, 'CDS_Details': {'Name': stName, 'Location': location,
             # 'Nominal_Area': nomArea, 'Nominal_NGR': nomNGR}, 'Decsriptors': {'IHDTM_NGR': iHDTMNGR, 'Centroid_NGR': centroidNGR, 'DTM_Area': dTMArea,
@@ -137,21 +137,55 @@ for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user 
             # return stations
             # a function that gets the file path to the FEH CD-ROM csv file and imports the unguaged catchment. Might be better as a class.
 
-         # add conditionals for CD3 data to be associated with AMAX data
 
-        elif name.endswith(".CD3"):#parse data from CD3 file.  All information describing the gauging station and related catchment
+        elif name.endswith(
+                ".CD3"):  # parse data from CD3 file.  All information describing the gauging station and related catchment
 
             with open(os.path.join(subdir, name), 'r') as input_data:
 
-                cD3 = '.CD3'; ver = ''; stName = ''; Loc = ''; nomArea = 0; nomNGRE = None; nomNGRN =None; iHDTMNGRE = None; iHDTMNGRN = None; centroidNGR = None; dTMArea = 0
-                altBar = None; aspBar = None; aspVar = None; bFIHost = None; dPLBar = None; dPSBar = None; farl = None; fPExt = None; lDP = None; propWet = None; rmed1H = None;
-                rmed1D = None; rmed_2D = None; saar = None; saar_4170 = None; sprHost = None; urbConc1990 = None; urbExt1990 = None; urbLoc1990 = None; urbConc2000 = None;
-                urbExt2000 = None; urbLoc2000 = None; suitQMED = False; suitPooling = False; comments = ''
-                cursor.execute('CREATE TABLE IF NOT EXISTS cd3_data(stationNum INT, ver REAL, stName VARCHAR, Loc VARCHAR, nomArea REAL, nomNGRE INT,'
-                               'nomNGRN INT, iHDTMNGRE INT, iHDTMNGRN INT, centroidNGRE INT, centroidNGRN INT, dTMArea REAL, altBar INT, aspBar INT, aspVar REAL, bFIHost REAL,'
-                               'dPLBar REAL, dPSBar REAL, farl REAL, fPExt REAL, lDP REAL, propWet REAL, rmed1H REAL, rmed1D REAL, rmed2D REAL, saar INT, saar_1470 INT,'
-                               'sprHost REAL, urbConc1990 REAL, urbExt1990 REAL, urbLoc1990 REAL, urbConc2000 REAL, urbExt2000 REAL, urbLoc2000 REAL, suitQMED BOOLEAN, suitPooling BOOLEAN,'
-                               'comments VARCHAR)')
+                cD3 = '.CD3';
+                ver = '';
+                stName = '';
+                Loc = '';
+                nomArea = 0;
+                nomNGRE = None;
+                nomNGRN = None;
+                iHDTMNGRE = None;
+                iHDTMNGRN = None;
+                centroidNGRE = None;
+                centroidNGRN = None;
+                dTMArea = 0;
+                altBar = None;
+                aspBar = None;
+                aspVar = None;
+                bFIHost = None;
+                dPLBar = None;
+                dPSBar = None;
+                farl = None;
+                fPExt = None;
+                lDP = None;
+                propWet = None;
+                rmed1H = None;
+                rmed1D = None;
+                rmed_2D = None;
+                saar = None;
+                saar_4170 = None;
+                sprHost = None;
+                urbConc1990 = None;
+                urbExt1990 = None;
+                urbLoc1990 = None;
+                urbConc2000 = None;
+                urbExt2000 = None;
+                urbLoc2000 = None;
+                suitQMED = False;
+                suitPooling = False;
+                comments = ''
+                cursor.execute(
+                    'CREATE TABLE IF NOT EXISTS cd3_data(stationNum INT, ver REAL, stName VARCHAR, Loc VARCHAR, nomArea REAL, nomNGRE INT,'
+                    'nomNGRN INT, iHDTMNGRE INT, iHDTMNGRN INT, centroidNGRE INT, centroidNGRN INT, dTMArea REAL, altBar INT, aspBar INT, aspVar REAL, bFIHost REAL,'
+                    'dPLBar REAL, dPSBar REAL, farl REAL, fPExt REAL, lDP REAL, propWet REAL, rmed1H REAL, rmed1D REAL, rmed2D REAL, saar INT, saar_1470 INT,'
+                    'sprHost REAL, urbConc1990 REAL, urbExt1990 REAL, urbLoc1990 REAL, urbConc2000 REAL, urbExt2000 REAL, urbLoc2000 REAL, suitQMED BOOLEAN, suitPooling BOOLEAN,'
+                    'comments VARCHAR)')
                 for line in input_data:
                     splitline = line.split(',')
                     if splitline[0] == 'VERSION':
@@ -168,6 +202,14 @@ for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user 
                     elif splitline[0] == 'IHDTM NGR':
                         iHDTMNGRE = int(splitline[2].strip())
                         iHDTMNGRN = int(splitline[3].strip())
+                    elif splitline[0] == 'CENTROID NGR':
+                        centroidNGRE = int(splitline[2].strip())
+                        centroidNGRN = int(splitline[3].strip())
+                    elif splitline[0] == 'DTM AREA':
+                        dTMArea = float(splitline[1].strip())
+                    elif splitline[0] == 'ALTBAR':
+                        altBar = splitline[1].strip()
+
 
                 SQLinsert = "INSERT INTO cd3_data(stationNum, ver, stName, Loc, nomArea, nomNGRE, nomNGRN, iHDTMNGRE, iHDTMNGRN) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);"
                 data = (stationNum, ver, stName, Loc, nomArea, nomNGRE, nomNGRN, iHDTMNGRE, iHDTMNGRN)

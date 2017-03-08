@@ -4,7 +4,7 @@ Download flow data directly from NRFA website at http://nrfa.ceh.ac.uk/winfap-fe
 	- automate checking of hiflows website for updated zip
 	
 Unzip and parse into postgresql db
-migrate to Django framework
+migrate to Flask framework
 
 Allow upload of selected catchment data from FEH web service as a text file
 
