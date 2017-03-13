@@ -16,3 +16,6 @@ def SDM (areai, areaj, saari, saarj, farli, farlj, fpexti, fpextj):
 
     distance = math.sqrt((3.2*areadiff)+(0.5*saardiff)+(0.1*farldiff)+(0.2*fpextdiff))
     return distance
+
+
+def

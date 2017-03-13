@@ -2,6 +2,7 @@ import csv
 
 def importcatchment():
     #reads csv in and puts in it in alist of tuples
+
     with open('/Users/jem/WINFAP-FEH_v4.1/gore water.csv', 'r') as catchmentfile:
       reader = csv.reader(catchmentfile)
       ungaugedCatchment = list(reader)
