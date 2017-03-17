@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# readziptodict2.py
+# readziptodict2.py just a dump for all new stuff
+# todo: tidy this up into separate functions.  probably becomes the back end stuf to import winfap zip file
 import os.path
 from os.path import basename
 import psycopg2
@@ -209,7 +210,6 @@ for subdir, dirs, files in os.walk(pathtounzipped):  # to be replaced with user 
                         dTMArea = float(splitline[1].strip())
                     elif splitline[0] == 'ALTBAR':
                         altBar = splitline[1].strip()
-
 
                 SQLinsert = "INSERT INTO cd3_data(stationNum, ver, stName, Loc, nomArea, nomNGRE, nomNGRN, iHDTMNGRE, iHDTMNGRN) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);"
                 data = (stationNum, ver, stName, Loc, nomArea, nomNGRE, nomNGRN, iHDTMNGRE, iHDTMNGRN)
