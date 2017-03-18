@@ -1,5 +1,7 @@
 def main():
     pass
+# bring in CD3 file
+# bring in station data from database
 
     # open existing project
     # get project details from database for user
@@ -20,7 +22,7 @@ def main():
     # select all suitable for pooling stations from database and put into dictionary
     # iterate over dictionary and calculate SDM for each station vs ungauged catchment
     # sort stations by SDM
-    # move stations into new list (poolin_group) based on lowest SDM first until
+    # move stations into new list (pooling_group) based on lowest SDM first until
     # number of years data is at least 500
 
     # calculate growth curve
