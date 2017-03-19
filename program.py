@@ -1,5 +1,12 @@
+from FEH import importcatchment
+from FEH import SDM
+
 def main():
-    pass
+    # gets the user selected ungauged catchment data in ready for SDM calculation
+
+    uc = importcatchment.import_catchment()
+    distance = SDM.SDM(140.38, 132.96, 579, 588, 0.994, 0.982, 1-0.9312, 1-0.9341)
+    print(uc)
 # bring in CD3 file
 # bring in station data from database
 
@@ -27,3 +34,6 @@ def main():
 
     # calculate growth curve
     # use LMOM and enhanced procedure to do this
+
+if __name__ == '__main__':
+    main()
