@@ -1,8 +1,10 @@
 import csv
 from collections import namedtuple
+import psycopg2
 
 
-def import_catchment():
+def import_catchment(user_name: str):
+
     # reads csv in and puts in it in a list of tuples
     # todo: ask for user file to be uploaded in .CD3 format
     # todo: check program.py for flask procedure hints
@@ -62,6 +64,17 @@ def import_catchment():
         e_1km = float(ungaugedcatchment_list[38][1])
         f_1km = float(ungaugedcatchment_list[39][1])
 
+    db = psycopg2.connect("dbname='feh1' user='jem' host='localhost'")
+    cur = db.cursor()
     uc = ungauged_catchment(areai=area, saari=saar, farli=farl, fpexti=fpExt)
-    return uc
+    cur.execute('CREATE TABLE IF NOT EXISTS user_ungauged_catchment'
+              '(catchment_name VARCHAR, areai REAL, saari REAL, farli REAL, fpexti REAL)')
+    db.commit()
+
+    SQLinsert = (
+    "INSERT INTO user_ungauged_catchment(catchment_name, areai, saari, farli, fpexti) VALUES (%s, %s, %s, %s, %s)")
+    data = (user_name, uc.areai, uc.saari, uc.farli, uc.fpexti)
+    cur.execute(SQLinsert, data)
+    db.commit()
+
 

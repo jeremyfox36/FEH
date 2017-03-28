@@ -1,0 +1,10 @@
+SELECT user_ungauged_catchment.catchment_name,
+    cd3_data.stationnum,
+    sqrt((3.2::double precision * (((ln(user_ungauged_catchment.areai::double precision) - ln(cd3_data.dtmarea::double precision)) / 1.28::double precision) ^ 2::double precision)) +
+    (0.5::double precision * (((ln(user_ungauged_catchment.saari::double precision) - ln(cd3_data.saar::double precision)) / 0.37::double precision) ^ 2::double precision))+
+    (0.1::double precision * (((user_ungauged_catchment.farli - cd3_data.farl) / 0.05::double precision) ^ 2::double precision))+
+    (0.2::double precision * (((user_ungauged_catchment.fpexti - cd3_data.fpext) / 0.04::double precision) ^ 2::double precision))) AS SDM
+   FROM user_ungauged_catchment,
+    cd3_data
+  WHERE user_ungauged_catchment.catchment_name::text = '37017'::text AND cd3_data.suitpooling = True --change this clause to add user selected ungauged catchment
+  ORDER BY SDM
