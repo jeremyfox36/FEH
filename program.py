@@ -1,43 +1,53 @@
-from pprint import pprint
 
-from FEH.importcatchment import import_catchment
-from FEH.parse_zipfile import parse_zipfile
-from FEH import SDM
-
-
-def main():
-    print(SDM.sdm_from_db())
-
-    # gets the user selected ungauged catchment data in ready for SDM calculation
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, REAL
+Base = declarative_base()
 
 
-# bring in CD3 file
-# bring in station data from database
+class Catchment(Base):
+    __tablename__ = 'ungauged_catchments'
 
-# open existing project
-# get project details from database for user
-
-# new project
-# two tabs - Sites and Pooling group
-
-# add a site to the sites tab and view the station data
-# flask procedures for lists and file opening - SelectField, wtforms, request.form.getlist
-
-# create a new station (ungauged site) from FEH CD-ROM data (.CD3 format)
-
-# begin estimation procedures
-# single site analysis or pooled analysis?
-
-# create pooling group
-# import ungauged catchment
-# select all suitable for pooling stations from database and put into dictionary
-# iterate over dictionary and calculate SDM for each station vs ungauged catchment
-# sort stations by SDM
-# move stations into new list (pooling_group) based on lowest SDM first until
-# number of years data is at least 500
-
-# calculate growth curve
-# use LMOM and enhanced procedure to do this
-
-if __name__ == '__main__':
-    main()
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    catchment_name = Column(String)
+    version = Column(String)
+    catchment = Column(String)
+    centroid = Column(String)
+    centroid_e = Column(Integer)
+    centroid_n = Column(Integer)
+    area = Column(REAL)
+    altbar = Column(Integer)
+    aspbar = Column(Integer)
+    aspvar = Column(REAL)
+    bfihost = Column(REAL)
+    dplbar = Column(REAL)
+    dpsbar = Column(REAL)
+    farl = Column(REAL)
+    fpext = Column(REAL)
+    fpdbar = Column(REAL)
+    fploc = Column(REAL)
+    ldp = Column(REAL)
+    propwet = Column(REAL)
+    rmed_1h = Column(REAL)
+    rmed_1d = Column(REAL)
+    rmed_2d = Column(REAL)
+    saar = Column(REAL)
+    saar4170 = Column(REAL)
+    sprhost = Column(REAL)
+    urbconc1990 = Column(REAL)
+    urbext1990 = Column(REAL)
+    urbloc1990 = Column(REAL)
+    urbconc2000 = Column(REAL)
+    urbext2000 = Column(REAL)
+    urbloc2000 = Column(REAL)
+    c = Column(REAL)
+    d1 = Column(REAL)
+    d2 = Column(REAL)
+    d3 = Column(REAL)
+    e = Column(REAL)
+    f = Column(REAL)
+    c_1km = Column(REAL)
+    d1_1km = Column(REAL)
+    d2_1km = Column(REAL)
+    d3_1km = Column(REAL)
+    e_1km = Column(REAL)
+    f_1km = Column(REAL)

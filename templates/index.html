@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+    {% for station in stations %}
+    <div>Station number: {{station.stationnum}}</div>
+    {% endfor %}
+{% endblock %}
