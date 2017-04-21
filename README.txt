@@ -1,17 +1,23 @@
+Bacground
+This is a Python3/postgresql/Flask learning project.
+The goal is to translate the Flood Estimation Handbook (http://www.ceh.ac.uk/services/flood-estimation-handbook) methods into a web application.
+
 Specification
+I would like to be able to upload a new ungauged catchment and calculate the growth cuve and QMED for different return periods. The package should also allow me to add climate change corrections.
+I can do calcs for a guaged catchment and add a donor if i want to.
+Essential	
+Unzip and parse NRFA Hiflows data into postgresql db
 
-Download flow data directly from NRFA website at http://nrfa.ceh.ac.uk/winfap-feh-files (backend infrequent updates)
-	- automate checking of hiflows website for updated zip
-	
-Unzip and parse into postgresql db
-migrate to Flask framework
-
-Allow upload of selected catchment data from FEH web service as a text file
+Allow upload of selected catchment data as a text file
 
 perform FEH procedures
-	import or convert R library LMOMRFA for heterogeneity calcs
-	Calculate distance measure
-	Find optimal pool from NRFA data
-	calculate L-moments using LMOM library
-	calculate growth curve
-	provide pooling group stats for assessment
+        Calculate distance measure
+	Find pooling group
+	calculate heterogeneity measure (import or convert R library LMOMRFA)
+	display pooling group with the option to remove or add catchments
+	display individual AMAX data
+	calculate growth curv
+	
+Nice to have
+Download flow data directly from NRFA website at http://nrfa.ceh.ac.uk/winfap-feh-files (backend infrequent updates)
+	- automate checking of hiflows website for updated zip
