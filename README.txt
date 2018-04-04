@@ -3,9 +3,10 @@ This is a Python3/postgresql/Flask learning project.
 The goal is to translate the Flood Estimation Handbook (http://www.ceh.ac.uk/services/flood-estimation-handbook) methods into a web application.
 
 Specification
-I would like to be able to upload a new ungauged catchment and calculate the growth cuve and QMED for different return periods. The package should also allow me to add climate change corrections.
+Should be be able to upload a new ungauged catchment and calculate the growth cuve and QMED for different return periods. The package should also allow me to add climate change corrections.
 I can do calcs for a guaged catchment and add a donor if i want to.
 Essential	
+
 Unzip and parse NRFA Hiflows data into postgresql db
 
 Allow upload of selected catchment data as a text file
