@@ -1,5 +1,5 @@
 Bacground
-This is a Python3/postgresql/Flask learning project.
+This is a Python3/postgresql/Flask application.
 The goal is to translate the Flood Estimation Handbook (http://www.ceh.ac.uk/services/flood-estimation-handbook) methods into a web application.
 
 Specification
