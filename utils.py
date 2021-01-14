@@ -123,6 +123,9 @@ def unzip():
 
 
 def parse_zipfile():
+    """
+    Take WINFAP zip file and parse files into a postgresql database
+    """
 
     db = psycopg2.connect("dbname='feh1' user='jem' host='localhost'")
     c = db.cursor()
@@ -358,6 +361,7 @@ def parse_zipfile():
 
 
 def sdm_from_db():
+    
     total_years_data = 0  # keeps count of number of years data for formation of pooling group
     pooling_group = {}
 
@@ -401,6 +405,18 @@ def sdm_from_db():
 
 
 def catchment_distance(ungauged_e, ungauged_n, donor_e, donor_n):
+    """
+    Calculate the distance in km between two ordnance survey grid references
+    
+    Keyword arguments:
+    ungauged_e (int): easting of the ungauged catchment
+    ungauged_n (int): northing of the ungauged catchment
+    donor_e (int: easting of the donor catchment
+    donor_n (int): northing of the donor catchment
+    
+    Returns:
+    distance (int): distance between points
+    """
     # takes Ordnance Survey grid reference and returns the distance between the points in km
     # calculates distance between catchment centroids
     # grid refs are six figures, therefore the distance will be in m
@@ -414,7 +430,18 @@ def catchment_distance(ungauged_e, ungauged_n, donor_e, donor_n):
 
 
 def qmed_catchment_descriptors(area, saar, farl, bfihost):
-    # estimates qmed from catchment descriptors
+    """
+    Estimate the QMED (CUMECS) from catchment descriptors
+    
+    Keyword arguments:
+    area (float): area of the catchment in km^2
+    saar: (float):  standard average annual rainfall in mm
+    farl (float): Flood Attenuation by Reservoirs and Lakes index
+    bfihost (float): base flow index. A measure of catchment responsiveness derived using the 29-class Hydrology Of Soil Types (HOST) classification
+    
+    Returns:
+    qmed_cds (float): catchment QMED estimate
+    """
 
     qmed_cds = 8.3062 * pow(area, 0.851) * pow(0.1536, 1000/saar) * pow(farl, 3.4451) * pow(0.046, pow(bfihost, 2))
 
@@ -422,18 +449,26 @@ def qmed_catchment_descriptors(area, saar, farl, bfihost):
 
 
 def donor_adjusted_qmed(distance, qmed_s_cds, qmed_g_obs, qmed_g_cds):
-    # modified qmed adjustment factor for donor catchment (EA Science Report: SC050050)
-    # target site (s)
-    # donor site (g)
-    # obs - observed
-    # cds - from catchment descriptors
+    """
+    Calculate modified qmed adjustment factor for donor catchment (EA Science Report: SC050050)
+    where:
+    target site (s)
+    donor site (g)
+    obs - observed
+    cds - from catchment descriptors
+    
+    Keyword arguments:
+    qmed_g_obs (float): observed qmed
+    qmed_g_cds (float): qmed of gauged site based on catchment descriptors
+    qmed_s_cds (float): qmed of ungauged site based on catchment descriptors
+    
+    Return:
+    round(qmed_s_adj,2) (decimal): adjusted QMED rounded to 2 decimal places
+    """
 
     a_sg = round(0.4598 * exp(-0.02 * distance) + (1 - 0.4598) * exp(-0.4785 * distance), 2)
 
-    # qmed_g_obs is observed qmed
-    # qmed_g_cds is qmed of gauged site based on catchment descriptors
-    # qmed_s_cds is qmed of ungauged site based on catchment descriptors
-
+   
     qmed_s_adj = qmed_s_cds * pow(qmed_g_obs/qmed_g_cds, a_sg)
 
     return round(qmed_s_adj,2)
