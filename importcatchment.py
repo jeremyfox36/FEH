@@ -89,6 +89,6 @@ def import_catchment():
         cur.execute(qry, (AsIs(','.join(columns)), values))
         # print(cur.mogrify(qry, (AsIs(','.join(columns)), tuple(values))))
     else:
-        engine = create_engine('postgresql+psycopg2://jem:flanagan@localhost:5432/feh1', echo=True)
+        engine = create_engine('postgresql+psycopg2://jem:pswd@localhost:5432/feh1', echo=True)
         data = pd.DataFrame(ungauged_catchment_dict, index=[0])
         data.to_sql('ungauged_catchment', engine)
